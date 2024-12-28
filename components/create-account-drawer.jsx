@@ -7,7 +7,7 @@ import {
     DrawerTitle,
     DrawerTrigger
 } from "@/components/ui/drawer";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {accountSchema} from "@/app/lib/schema";
@@ -21,6 +21,10 @@ import {
 } from "@/components/ui/select";
 import {Switch} from "@/components/ui/switch";
 import {Button} from "@/components/ui/button";
+import useFetch from "@/hooks/use-fetch";
+import {createAccount} from "@/actions/dashboard";
+import {Loader2} from "lucide-react";
+import {toast} from "sonner";
 
 
 const CreateAccountDrawer = ({children}) => {
@@ -44,8 +48,25 @@ const CreateAccountDrawer = ({children}) => {
         },
     });
 
+    const {data: newAccount, error, fn: createAccountFn, loading: createAccountLoading} = useFetch(createAccount)
+
+    useEffect(() => {
+        if (newAccount && !createAccountLoading){
+            toast.success("Account created successfully");
+            reset();
+            setOpen(false);
+        }
+    }, [createAccountLoading, newAccount]);
+
+    useEffect(() => {
+        if(error) {
+            toast.error(error.message || "Failed to create account");
+        }
+    }, [error]);
+
+
     const onSubmit = async (data) => {
-        console.log(data);
+        await createAccountFn(data);
     };
 
     return (
@@ -109,7 +130,7 @@ const CreateAccountDrawer = ({children}) => {
                                 placeholder="0.00"
                                 {...register("balance")}
                             />
-                            {errors.balance && (
+                        {errors.balance && (
                                 <p className="text-sm text-red-500">{errors.balance.message}</p>
                             )}
                         </div>
@@ -136,8 +157,13 @@ const CreateAccountDrawer = ({children}) => {
                                     Cancel
                                 </Button>
                             </DrawerClose>
-                            <Button type="submit" className="flex-1">
-                                Create Account
+                            <Button type="submit" className="flex-1" disabled={createAccountLoading}>
+                                {createAccountLoading? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                                        Creating...
+                                    </>
+                                ) : ("Create Account")}
                             </Button>
                         </div>
 
