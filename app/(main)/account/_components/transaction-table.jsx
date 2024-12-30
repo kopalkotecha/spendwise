@@ -4,6 +4,9 @@ import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Table
 import {Checkbox} from "@/components/ui/checkbox";
 
 const TransactionTable = ({transactions}) => {
+
+    const handleSort = () => {}
+
     return (
         <div  className="space-y-4">
 
@@ -18,8 +21,15 @@ const TransactionTable = ({transactions}) => {
                             <Checkbox/>
                         </TableHead>
 
-                        <TableHead className="cursor-pointer">
-                            Date
+                        <TableHead className="cursor-pointer" onClicl={() => handleSort("date")}>
+                            <div className="flex items-center">Date</div>
+                        </TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead className="cursor-pointer" onClicl={() => handleSort("category")}>
+                            <div className="flex items-center">Category</div>
+                        </TableHead>
+                        <TableHead className="cursor-pointer" onClicl={() => handleSort("amount")}>
+                            <div className="flex items-center">Amount</div>
                         </TableHead>
 
                     </TableRow>
