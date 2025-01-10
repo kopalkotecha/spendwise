@@ -88,17 +88,17 @@ export function TransactionTable({ transactions }) {
             );
         }
 
+        // Apply type filter
+        if (typeFilter) {
+            result = result.filter((transaction) => transaction.type === typeFilter);
+        }
+
         // Apply recurring filter
         if (recurringFilter) {
             result = result.filter((transaction) => {
                 if (recurringFilter === "recurring") return transaction.isRecurring;
                 return !transaction.isRecurring;
             });
-        }
-
-        // Apply type filter
-        if (typeFilter) {
-            result = result.filter((transaction) => transaction.type === typeFilter);
         }
 
         // Apply sorting
@@ -175,7 +175,7 @@ export function TransactionTable({ transactions }) {
         )
             return;
 
-        deleteFn(selectedIds);
+        await deleteFn(selectedIds);
     };
 
     useEffect(() => {

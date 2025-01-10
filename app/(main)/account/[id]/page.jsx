@@ -1,8 +1,8 @@
 import React, {Suspense} from 'react'
 import {getAccountWithTransactions} from "@/actions/account";
 import {notFound} from "next/navigation";
-import TransactionTable from "@/app/(main)/account/_components/transaction-table";
 import {BarLoader} from "react-spinners";
+import {TransactionTable} from "@/app/(main)/account/_components/transaction-table";
 
 
 const AccountsPage = async ({params}) => {
