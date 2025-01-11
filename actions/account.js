@@ -85,11 +85,11 @@ export async function getAccountWithTransactions(accountId) {
 
 export async function bulkDeleteTransactions(transactionIds) {
     try {
-        const { userId } = await auth();
+        const {userId} = await auth();
         if (!userId) throw new Error("Unauthorized");
 
         const user = await db.user.findUnique({
-            where: { clerkUserId: userId },
+            where: {clerkUserId: userId},
         });
 
         if (!user) throw new Error("User not found");
@@ -97,7 +97,7 @@ export async function bulkDeleteTransactions(transactionIds) {
         // Get transactions to calculate balance changes
         const transactions = await db.transaction.findMany({
             where: {
-                id: { in: transactionIds },
+                id: {in: transactionIds},
                 userId: user.id,
             },
         });
@@ -117,7 +117,7 @@ export async function bulkDeleteTransactions(transactionIds) {
             // Delete transactions
             await tx.transaction.deleteMany({
                 where: {
-                    id: { in: transactionIds },
+                    id: {in: transactionIds},
                     userId: user.id,
                 },
             });
@@ -127,7 +127,7 @@ export async function bulkDeleteTransactions(transactionIds) {
                 accountBalanceChanges
             )) {
                 await tx.account.update({
-                    where: { id: accountId },
+                    where: {id: accountId},
                     data: {
                         balance: {
                             increment: balanceChange,
@@ -140,8 +140,8 @@ export async function bulkDeleteTransactions(transactionIds) {
         revalidatePath("/dashboard");
         revalidatePath("/account/[id]");
 
-        return { success: true };
+        return {success: true};
     } catch (error) {
-        return { success: false, error: error.message };
+        return {success: false, error: error.message};
     }
 }
